@@ -14,6 +14,12 @@ int main() {
     int n = arr.size();
     int swaps = n / 2;
 
+    cout << "Arreglo original: ";
+    for (int i = 0; i < n; i++) {
+        cout << arr[i] << " ";
+    }
+    cout << endl;
+    
     for (int i = 0; i < swaps; i++) {
         hilos.emplace_back(invertirArreglo, ref(arr), i, n - 1 - i);
         cout << "Hilo " << i << " ejecutándose" << endl;
@@ -22,11 +28,10 @@ int main() {
         hilo.join();
     }
 
+    cout << "Arreglo invertido: ";
     for (int i = 0; i < n; i++) {
         cout << arr[i] << " ";
     }
     cout << endl;
     return 0;
 }
-
-
