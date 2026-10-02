@@ -2,8 +2,8 @@
 
 ## Equipo 8
 
-**Integrantes:** Diana Jazmín Morales López 
-                 Maria Guadalupe Olvera Mayo
+**Integrantes:** Diana Jazmín Morales López <br>
+                 Maria Guadalupe Olvera Mayo <br>
                  Luis Angel Hernández Aparicio
 
 **Curso:** Programación Concurrente y Paralela
