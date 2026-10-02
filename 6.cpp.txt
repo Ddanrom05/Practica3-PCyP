@@ -3,66 +3,66 @@
 #include <string>
 #include <thread>
 
-// Estructura para representar los datos de cada estudiante[cite: 16]
+// Estructura para representar los datos de cada estudiante
 struct Estudiante {
     std::string nombre;
     int edad;
-    double examen[3];     // 3 exámenes parciales[cite: 16]
-    double actividad[4];  // 4 actividades[cite: 16]
+    double examen[3];     // 3 exámenes parciales
+    double actividad[4];  // 4 actividades
 };
 
-// Tarea Ei: Evalúa a un solo estudiante y guarda el resultado en su posición[cite: 16]
+// Tarea Ei: Evalúa a un solo estudiante y guarda el resultado en su posición
 void evaluarEstudiante(const Estudiante& est, int& resultadoAprobado) {
-    // 1. Verificar si aprobó los 3 exámenes parciales (todos >= 6)[cite: 16]
+    // 1. Verificar si aprobó los 3 exámenes parciales (todos >= 6)
     bool examenesAprobados = (est.examen[0] >= 6.0 && est.examen[1] >= 6.0 && est.examen[2] >= 6.0);
 
-    // 2. Calcular promedio de exámenes (50%)[cite: 16]
+    // 2. Calcular promedio de exámenes (50%)
     double promExamenes = (est.examen[0] + est.examen[1] + est.examen[2]) / 3.0;
 
-    // 3. Calcular promedio de actividades (50%)[cite: 16]
+    // 3. Calcular promedio de actividades (50%)
     double promActividades = (est.actividad[0] + est.actividad[1] + est.actividad[2] + est.actividad[3]) / 4.0;
 
     // 4. Calificación final combinada[cite: 16]
     double calificacionFinal = 0.5 * promExamenes + 0.5 * promActividades;
 
-    // Un estudiante aprueba si pasa los 3 exámenes Y la calificación final >= 6[cite: 16]
+    // Un estudiante aprueba si pasa los 3 exámenes Y la calificación final >= 6
     resultadoAprobado = (examenesAprobados && calificacionFinal >= 6.0) ? 1 : 0;
 }
 
 int main() {
-    // S0: Cargar/leer datos de los N estudiantes[cite: 16]
+    // S0: Cargar/leer datos de los N estudiantes
     std::vector<Estudiante> estudiantes = {
         {"Juan Perez", 20, {8.0, 7.0, 6.0}, {9.0, 8.0, 10.0, 7.0}},   // Aprueba
-        {"Maria Lopez", 21, {5.0, 9.0, 8.0}, {10.0, 9.0, 8.0, 10.0}},  // Reprueba (reprobó examen 1)[cite: 16]
+        {"Maria Lopez", 21, {5.0, 9.0, 8.0}, {10.0, 9.0, 8.0, 10.0}},  // Reprueba (reprobó examen 1)
         {"Carlos Gomez", 19, {6.0, 6.0, 6.0}, {6.0, 6.0, 6.0, 6.0}},   // Aprueba
         {"Ana Torres", 22, {4.0, 5.0, 6.0}, {5.0, 4.0, 6.0, 5.0}}     // Reprueba
     };
 
     int N = estudiantes.size();
 
-    // Arreglo de tipo 'int' en vez de 'bool' para evitar la optimización de bit de std::vector<bool>[cite: 16]
+    // Arreglo de tipo 'int' en vez de 'bool' para evitar la optimización de bit de std::vector<bool>
     std::vector<int> aprobado(N, 0);
     std::vector<std::thread> hilos;
 
-    // COBEGIN: Crear N hilos en paralelo (uno por cada estudiante)[cite: 16, 18]
+    // COBEGIN: Crear N hilos en paralelo (uno por cada estudiante)
     for (int i = 0; i < N; ++i) {
         hilos.push_back(std::thread(evaluarEstudiante, std::cref(estudiantes[i]), std::ref(aprobado[i])));
     }
 
-    // COEND: Esperar a que todas las tareas E1..EN terminen[cite: 18]
+    // COEND: Esperar a que todas las tareas E1..EN terminen
     for (auto& t : hilos) {
         if (t.joinable()) {
             t.join();
         }
     }
 
-    // SN+1: Construir y mostrar la lista de estudiantes aprobados (Fase secuencial)[cite: 16, 18]
+    // SN+1: Construir y mostrar la lista de estudiantes aprobados (Fase secuencial)
     std::cout << "--- Lista de Estudiantes Aprobados ---" << std::endl;
     for (int i = 0; i < N; ++i) {
         if (aprobado[i] == 1) {
             std::cout << "- " << estudiantes[i].nombre << std::endl;
         }
     }
-   //hola
+   
     return 0;
 }
