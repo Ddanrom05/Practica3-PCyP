@@ -1,7 +1,5 @@
 # Práctica 3 — Modelado de soluciones paralelas
 
-<br>
-
 ## Equipo 8
 
 **Integrantes:** Diana Jazmín Morales López 
