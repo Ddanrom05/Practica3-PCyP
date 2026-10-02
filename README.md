@@ -17,7 +17,7 @@ Luis Angel Hernández Aparicio
 
 En esta práctica se modelan e implementan soluciones paralelas para diferentes problemas mediante el análisis de dependencias entre tareas.
 
-Para cada ejercicio se utilizan:
+Para cada ejercicio se realizaron:
 
 * **Grafos de dependencia**
 * **Condiciones de Bernstein**
