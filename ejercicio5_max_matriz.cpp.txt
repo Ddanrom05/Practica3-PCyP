@@ -9,12 +9,9 @@
  *   SN+1    -> compara los N maximos parciales para obtener el maximo global
  *              (secuencial)
  *
- * No se usan mutex, locks ni semaforos porque, segun las condiciones de
- * Bernstein verificadas en el analisis teorico, cada hilo Si SOLO lee su
+ * Segun las condiciones de Bernstein verificadas en el analisis teorico, cada hilo Si SOLO lee su
  * propia fila M[i] y SOLO escribe en su propia posicion maxFila[i]. Las filas
- * no se traslapan en memoria, entonces W(Si) ∩ W(Sj) = ∅ para toda i≠j y no
- * existe condicion de carrera: no se requiere ningun mecanismo de exclusion
- * mutua.
+ * no se traslapan en memoria, entonces W(Si) ∩ W(Sj) = ∅ para toda i≠j.
  */
 
 #include <iostream>
