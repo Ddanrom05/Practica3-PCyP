@@ -2,15 +2,14 @@
 
 ## Equipo 8
 
-**Integrantes:** Diana Jazmín Morales López <br>
-                 Maria Guadalupe Olvera Mayo <br>
-                 Luis Angel Hernández Aparicio
+**Integrantes:** <br>
+Diana Jazmín Morales López <br>
+Maria Guadalupe Olvera Mayo <br>
+Luis Angel Hernández Aparicio
 
 **Curso:** Programación Concurrente y Paralela
 
 **Fecha:** 01 de octubre, 2026
-
-<br>
 
 ---
 
