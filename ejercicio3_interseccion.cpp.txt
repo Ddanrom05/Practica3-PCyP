@@ -1,0 +1,76 @@
+/*
+ * Ejercicio 3: Interseccion de dos conjuntos de cadenas
+ * Programacion Concurrente y Paralela - Otono 2026
+ *
+ * Correspondencia con el modelado teorico:
+ *   S0      -> lectura de los arreglos A y B (ya estan en memoria al iniciar)
+ *   S1..Sn  -> una tarea (hilo) por cada elemento de A, verifica si A[i] esta en B
+ *              y escribe el resultado en pertenece[i]  (bloque COBEGIN-COEND)
+ *   Sn+1    -> construye el conjunto resultado C recorriendo pertenece[] (secuencial)
+ *
+ * No se usan mutex, locks ni semaforos porque, segun las condiciones de
+ * Bernstein verificadas en el analisis teorico, cada hilo Si SOLO escribe en
+ * su propia posicion pertenece[i] y SOLO lee A[i] y B (que nunca se modifica).
+ * Como W(Si) ∩ W(Sj) = ∅ para toda i≠j, no existe condicion de carrera y por
+ * lo tanto no se requiere ningun mecanismo de exclusion mutua.
+ */
+
+#include <iostream>
+#include <vector>
+#include <string>
+#include <thread>
+
+using namespace std;
+
+// Tarea Si: determina si A[i] pertenece a B (solo lectura de A y B)
+void buscarEnB(const vector<string>& A, const vector<string>& B,
+               vector<bool>& pertenece, int i) {
+    for (const string& elementoB : B) {
+        if (A[i] == elementoB) {
+            pertenece[i] = true;   // escritura exclusiva de este hilo
+            return;
+        }
+    }
+    pertenece[i] = false;          // escritura exclusiva de este hilo
+}
+
+int main() {
+    // S0: conjuntos de entrada (lectura)
+    vector<string> A = {"perro", "gato", "loro", "pez", "tortuga", "iguana"};
+    vector<string> B = {"gato", "iguana", "conejo", "pez", "hamster"};
+
+    int n = A.size();
+    vector<bool> pertenece(n, false);   // cada hilo escribe en una posicion distinta
+    vector<thread> hilos;
+
+    // ---- COBEGIN ----
+    // Se lanza una tarea (hilo) por cada elemento de A; todas son independientes
+    for (int i = 0; i < n; i++) {
+        hilos.emplace_back(buscarEnB, cref(A), cref(B), ref(pertenece), i);
+    }
+    // ---- COEND ----
+    // Se espera a que TODOS los hilos terminen antes de continuar (sincronizacion
+    // de reunion, no es exclusion mutua: cada hilo ya trabajo en su propio dato)
+    for (auto& h : hilos) {
+        h.join();
+    }
+
+    // Sn+1: construccion secuencial del conjunto resultado C
+    vector<string> C;
+    for (int i = 0; i < n; i++) {
+        if (pertenece[i]) {
+            C.push_back(A[i]);
+        }
+    }
+
+    // Resultados
+    cout << "Conjunto A: ";
+    for (const auto& s : A) cout << s << " ";
+    cout << "\nConjunto B: ";
+    for (const auto& s : B) cout << s << " ";
+    cout << "\nInterseccion (A inter B): ";
+    for (const auto& s : C) cout << s << " ";
+    cout << endl;
+
+    return 0;
+}

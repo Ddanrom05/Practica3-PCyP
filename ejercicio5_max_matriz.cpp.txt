@@ -1,0 +1,84 @@
+/*
+ * Ejercicio 5: Valor maximo de una matriz N x M
+ * Programacion Concurrente y Paralela - Otono 2026
+ *
+ * Correspondencia con el modelado teorico:
+ *   S0      -> lectura/carga de la matriz M (ya esta en memoria al iniciar)
+ *   S1..SN  -> una tarea (hilo) por cada fila, calcula el maximo de esa fila
+ *              y lo escribe en maxFila[i]  (bloque COBEGIN-COEND)
+ *   SN+1    -> compara los N maximos parciales para obtener el maximo global
+ *              (secuencial)
+ *
+ * No se usan mutex, locks ni semaforos porque, segun las condiciones de
+ * Bernstein verificadas en el analisis teorico, cada hilo Si SOLO lee su
+ * propia fila M[i] y SOLO escribe en su propia posicion maxFila[i]. Las filas
+ * no se traslapan en memoria, entonces W(Si) ∩ W(Sj) = ∅ para toda i≠j y no
+ * existe condicion de carrera: no se requiere ningun mecanismo de exclusion
+ * mutua.
+ */
+
+#include <iostream>
+#include <vector>
+#include <thread>
+#include <climits>
+
+using namespace std;
+
+// Tarea Si: calcula el maximo de la fila i (solo lee esa fila)
+void maximoFila(const vector<vector<int>>& M, vector<int>& maxFila, int i) {
+    int maximo = INT_MIN;
+    for (int valor : M[i]) {
+        if (valor > maximo) {
+            maximo = valor;
+        }
+    }
+    maxFila[i] = maximo;   // escritura exclusiva de este hilo
+}
+
+int main() {
+    // S0: matriz de entrada (lectura), N filas x M columnas
+    vector<vector<int>> M = {
+        {3, 17, 9, 2},
+        {25, 1, 14, 8},
+        {6, 7, 30, 11},
+        {12, 19, 4, 22}
+    };
+
+    int N = M.size();
+    vector<int> maxFila(N);   // cada hilo escribe en una posicion distinta
+    vector<thread> hilos;
+
+    // ---- COBEGIN ----
+    // Se lanza una tarea (hilo) por cada fila; todas son independientes entre si
+    for (int i = 0; i < N; i++) {
+        hilos.emplace_back(maximoFila, cref(M), ref(maxFila), i);
+    }
+    // ---- COEND ----
+    // Se espera a que TODOS los hilos terminen (sincronizacion de reunion,
+    // no exclusion mutua: cada hilo ya trabajo sobre su propia fila)
+    for (auto& h : hilos) {
+        h.join();
+    }
+
+    // SN+1: comparacion secuencial de los maximos parciales
+    int maxTotal = maxFila[0];
+    for (int i = 1; i < N; i++) {
+        if (maxFila[i] > maxTotal) {
+            maxTotal = maxFila[i];
+        }
+    }
+
+    // Resultados
+    cout << "Matriz:" << endl;
+    for (const auto& fila : M) {
+        for (int v : fila) cout << v << "\t";
+        cout << endl;
+    }
+
+    cout << "\nMaximos por fila: ";
+    for (int v : maxFila) cout << v << " ";
+
+    cout << "\nValor maximo de la matriz: " << maxTotal << endl;
+
+    return 0;
+}
