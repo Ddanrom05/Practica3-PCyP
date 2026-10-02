@@ -4,7 +4,7 @@
 #include <thread>
 #include <utility>
 
-// Tarea: Comparar e intercambiar[cite: 2, 4]
+// Tarea: Comparar e intercambiar
 void comparaSwap(std::vector<std::string>& A, int i, int j) {
     if (i < A.size() && j < A.size()) {
         if (A[i] > A[j]) {
@@ -15,22 +15,22 @@ void comparaSwap(std::vector<std::string>& A, int i, int j) {
 
 void OrdenamientoImparPar(std::vector<std::string>& A) {
     int n = A.size();
-    for (int fase = 0; fase < n; ++fase) { // N fases secuenciales[cite: 2]
+    for (int fase = 0; fase < n; ++fase) { // N fases secuenciales
         std::vector<std::thread> threads;
 
         if (fase % 2 == 0) {
-            // Fase Par[cite: 2]
+            // Fase Par
             for (int i = 0; i < n - 1; i += 2) {
                 threads.push_back(std::thread(comparaSwap, std::ref(A), i, i + 1));
             }
         } else {
-            // Fase Impar[cite: 2]
+            // Fase Impar
             for (int i = 1; i < n - 1; i += 2) {
                 threads.push_back(std::thread(comparaSwap, std::ref(A), i, i + 1));
             }
         }
 
-        // COEND: Esperar a que todos los hilos de la fase terminen[cite: 3, 4]
+        // COEND: Esperar a que todos los hilos de la fase terminen
         for (auto& t : threads) {
             if (t.joinable()) {
                 t.join();
