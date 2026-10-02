@@ -8,11 +8,9 @@
  *              y escribe el resultado en pertenece[i]  (bloque COBEGIN-COEND)
  *   Sn+1    -> construye el conjunto resultado C recorriendo pertenece[] (secuencial)
  *
- * No se usan mutex, locks ni semaforos porque, segun las condiciones de
- * Bernstein verificadas en el analisis teorico, cada hilo Si SOLO escribe en
+ * Segun las condiciones de Bernstein verificadas en el analisis teorico, cada hilo Si SOLO escribe en
  * su propia posicion pertenece[i] y SOLO lee A[i] y B (que nunca se modifica).
- * Como W(Si) ∩ W(Sj) = ∅ para toda i≠j, no existe condicion de carrera y por
- * lo tanto no se requiere ningun mecanismo de exclusion mutua.
+ * Como W(Si) ∩ W(Sj) = ∅ para toda i≠j.
  */
 
 #include <iostream>
